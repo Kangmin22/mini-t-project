@@ -1,0 +1,24 @@
+# FILE: docker-compose.yml (SHM 크기 증가 최종 버전)
+services:
+  app:
+    build: .
+    container_name: mini-t-app
+    
+    # (★★★★★ 최종 해결책 ★★★★★)
+    # 공유 메모리(/dev/shm) 크기를 2GB로 늘립니다.
+    # Ray와 PyTorch의 프로세스 간 통신 안정성을 위해 필수적입니다.
+    shm_size: '2gb'
+
+    volumes:
+      - ./:/app
+    environment:
+      - PYTHONPATH=/app
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
