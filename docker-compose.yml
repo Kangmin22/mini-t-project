@@ -1,0 +1,21 @@
+services:
+  app:
+    build: .
+    container_name: mini-t-app
+    
+    # 공유 메모리(/dev/shm) 크기를 2GB로 늘립니다.
+    shm_size: '2gb'
+
+    volumes:
+      - ./:/app
+    environment:
+      - PYTHONPATH=/app
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
